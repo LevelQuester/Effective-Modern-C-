@@ -1,0 +1,6 @@
+.idea/
+cmake-build-*/
+*.iws
+*.out
+
+DS_STORE
