@@ -1,30 +1,30 @@
 #include "Matrix.h"
 
 int Matrix::indexAt(int const row, int const column) const {
-    return M*row + column;
+    return numberOfColumns*row + column;
 }
 
-Matrix::Matrix() : N(0), M(0), data(nullptr) {
+Matrix::Matrix() : numberOfRows(0), numberOfColumns(0), data(nullptr) {
     std::cout << "default constructor\n";
 }
 
-Matrix::Matrix(int n, int m) : N(n), M(m), data(new double[n*m]) {
-    std::cout << "constructor of " << n << " of " << m << " matrix\n";
-    for (int i=0; i<N*M;i++) {
+Matrix::Matrix(int numberOfRows, int numberOfColumns) : numberOfRows(numberOfRows), numberOfColumns(numberOfColumns), data(new double[numberOfRows*numberOfColumns]) {
+    std::cout << "constructor of " << numberOfRows << " of " << numberOfColumns << " matrix\n";
+    for (int i=0; i<numberOfRows*numberOfColumns;i++) {
         data[i] = 0.0;
     }
 }
 
-Matrix::Matrix(std::initializer_list<std::initializer_list<double>> list) : N(list.size()), M(0){
+Matrix::Matrix(std::initializer_list<std::initializer_list<double>> list) : numberOfRows(list.size()), numberOfColumns(0){
     std::cout << "constructor of initializer_list\n";
     for (auto row : list) {
-        M = std::max(M, (int)row.size());
+        numberOfColumns = std::max(numberOfColumns, (int)row.size());
     }
-    data = new double[N*M];
+    data = new double[numberOfRows*numberOfColumns];
 
-    for (int i=0; i<N;i++) {
+    for (int i=0; i<numberOfRows;i++) {
         auto row = *(list.begin() + i);
-        for (int j=0; j<M;j++) {
+        for (int j=0; j<numberOfColumns;j++) {
             if (j < row.size()) {
                 data[indexAt(i, j)] = *(row.begin() + j);
             }
@@ -35,37 +35,37 @@ Matrix::Matrix(std::initializer_list<std::initializer_list<double>> list) : N(li
     }
 }
 
-Matrix::Matrix(const Matrix& other) : N(other.N), M(other.M) {
+Matrix::Matrix(const Matrix& other) : numberOfRows(other.numberOfRows), numberOfColumns(other.numberOfColumns) {
     std::cout << "copy constructor\n";
-    data = new double[N*M];
-    for (int i=0; i<N*M;i++) {
+    data = new double[numberOfRows*numberOfColumns];
+    for (int i=0; i<numberOfRows*numberOfColumns;i++) {
         data[i] = other.data[i];
     }
 }
 
-Matrix::Matrix(Matrix&& other) noexcept : N(other.N), M(other.M) {
+Matrix::Matrix(Matrix&& other) noexcept : numberOfRows(other.numberOfRows), numberOfColumns(other.numberOfColumns) {
     std::cout << "move constructor\n";
     this->data = other.data;
 
     other.data = nullptr;
-    other.N = 0;
-    other.M = 0;
+    other.numberOfRows = 0;
+    other.numberOfColumns = 0;
 }
 
 Matrix& Matrix::operator=(const Matrix &other) {
     std::cout << "copy assignment operator\n";
 
     if (this != &other) {
-        auto newData = new double[N*M];
+        auto newData = new double[numberOfRows*numberOfColumns];
 
-        for (int i = 0; i<N*M;i++) {
+        for (int i = 0; i<numberOfRows*numberOfColumns;i++) {
             newData[i] = other.data[i];
         }
         delete[] data;
 
         data = newData;
-        N = other.N;
-        M = other.M;
+        numberOfRows = other.numberOfRows;
+        numberOfColumns = other.numberOfColumns;
     }
     return *this;
 }
@@ -75,12 +75,12 @@ Matrix &Matrix::operator=(Matrix &&other) noexcept {
     if (this != &other) {
         delete[] data;
         data = other.data;
-        N = other.N;
-        M = other.M;
+        numberOfRows = other.numberOfRows;
+        numberOfColumns = other.numberOfColumns;
 
         other.data = nullptr;
-        other.N = 0;
-        other.M = 0;
+        other.numberOfRows = 0;
+        other.numberOfColumns = 0;
     }
     return* this;
 }
@@ -93,7 +93,7 @@ Matrix::~Matrix() {
 Matrix Matrix::operator-() const {
     Matrix negativeMatrix(*this);
 
-    for (int i=0; i<negativeMatrix.N * negativeMatrix.M;i++) {
+    for (int i=0; i<negativeMatrix.numberOfRows * negativeMatrix.numberOfColumns;i++) {
         negativeMatrix.data[i] *= -1;
     }
 
@@ -105,8 +105,8 @@ double& Matrix::operator()(int row, int column) const{
 }
 
 std::ostream& operator<<(std::ostream& os, const Matrix& matrix){
-    for (int i=0; i<matrix.N;i++) {
-        for (int j=0; j<matrix.M;j++) {
+    for (int i=0; i<matrix.numberOfRows;i++) {
+        for (int j=0; j<matrix.numberOfColumns;j++) {
             os << matrix(i, j) << " ";
         }
         os << "\n";

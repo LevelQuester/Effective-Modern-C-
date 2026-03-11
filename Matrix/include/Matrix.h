@@ -5,16 +5,16 @@
 #include <iostream>
 
 class Matrix {
-private:
-    int N;
-    int M;
+protected:
+    int numberOfRows;
+    int numberOfColumns;
     double *data;
 
-    int indexAt(int const row, int const column) const;
+    int indexAt(int row, int column) const;
 
 public:
     Matrix();
-    Matrix(int n, int m);
+    Matrix(int numberOfRows, int numberOfColumns);
     Matrix(std::initializer_list<std::initializer_list<double>> list);
     Matrix(const Matrix& other);
     Matrix(Matrix&& other) noexcept;
